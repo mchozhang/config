@@ -1,0 +1,48 @@
+; uncomment the below and copy [user] to ~/.gitconfig.secret
+; [user]
+;   name =
+; 	email =
+; 	signingkey =
+[include]
+    path = ~/.gitconfig.secret
+[commit]
+	gpgsign = true
+[gpg]
+    program = gpg
+[core]
+    excludesfile = ~/.gitignore_global
+    pager = delta
+[pull]
+    rebase = false
+[push]
+    autoSetupRemote = true
+[init]
+    defaultBranch = main
+[interactive]
+	# delta
+    diffFilter = delta --color-only
+[color]
+    # color output for all git commands
+    ui = true
+[diff]
+	color = always
+	# delta
+	colorMoved = default
+[alias]
+    st = status
+    br = branch
+[merge]
+	# delta
+    conflictstyle = diff3
+[delta]
+	# delta diff plugin
+    features = decorations
+    syntax-theme = Catppuccin Latte
+    navigate = true    # use n and N to move between diff sections
+    line-numbers = true
+    true-color = always
+[delta "decorations"]
+    commit-decoration-style = bold cyan box ul
+    file-style = bold cyan box
+    file-decoration-style = none
+    hunk-header-decoration-style = ul

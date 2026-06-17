@@ -1,0 +1,84 @@
+---
+tools:
+  - name: powerlevel10k
+    install:
+      default: |
+        git-install https://github.com/romkatv/powerlevel10k.git "${HOME}/opt/powerlevel10k"
+    enabled: true
+    install-priority: 100
+    bootstrap-priority: 100
+    bootstrap: |
+        source "${HOME}/opt/powerlevel10k/powerlevel10k.zsh-theme"
+        source "${HOME}/.p10k.zsh"
+
+  - name: fzf
+    enabled: true
+    install:
+      macos: |
+        brew-install fzf
+    bootstrap-priority: 100
+    bootstrap: |
+      source <(fzf --zsh)
+      source "$HOME/.config/fzf/.fzf.zsh"
+
+  - name: yazi
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install yazi
+    bootstrap-priority: 100
+    bootstrap: |
+      function y() {
+          local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+          yazi "$@" --cwd-file="$tmp"
+          if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+              builtin cd -- "$cwd"
+          fi
+          rm -f -- "$tmp"
+      }
+
+  - name: fast-syntax-highlighting
+    enabled: true
+    install-priority: 100
+    install:
+      default: |
+        git-install https://github.com/zdharma-continuum/fast-syntax-highlighting.git "${HOME}/opt/fast-syntax-highlighting"
+    bootstrap-priority: 100
+    bootstrap: |
+      source "${HOME}/opt/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+
+  - name: zsh-autosuggestions
+    enabled: true
+    install-priority: 100
+    install:
+      default: |
+        git-install https://github.com/zsh-users/zsh-autosuggestions.git "${HOME}/opt/zsh-autosuggestions"
+    bootstrap-priority: 100
+    bootstrap: |
+      source "${HOME}/opt/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+  - name: fzf-tab-completion
+    enabled: true
+    install-priority: 100
+    install:
+      default: |
+        git-install https://github.com/lincheney/fzf-tab-completion.git "${HOME}/opt/fzf-tab-completion"
+    bootstrap-priority: 100
+    bootstrap: |
+      source "${HOME}/environment/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
+      bindkey '^I' fzf_completion # Tab key
+
+  - name: bash-my-aws
+    enabled: true
+    install-priority: 100
+    install:
+      default: |
+        git-install https://github.com/mbailey/bash-my-aws.git "${HOME}/opt/bash-my-aws"
+    bootstrap-priority: 100
+    bootstrap: |
+      export BMA_HOME="${HOME}/opt/bash-my-aws"
+      export PATH="$PATH:${BMA_HOME}/bin"
+      export BMA_COLUMNISE_ONLY_WHEN_TERMINAL_PRESENT=true
+      source ${BMA_HOME}/aliases
+      source ${BMA_HOME}/bash_completion.sh

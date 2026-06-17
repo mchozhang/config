@@ -1,0 +1,52 @@
+theme = "light:Apple System Colors Light,dark:Catppuccin Mocha"
+
+# font
+font-family = ""MesloLGS NF
+font-size = 16
+font-thicken = false
+font-feature = +calt
+font-feature = +liga
+adjust-cell-height = 3
+adjust-cell-width = 1
+
+# background
+background-opacity = 0.92
+background-blur = 30
+macos-titlebar-style = tabs
+
+# window
+#window-padding-x = 2
+#window-padding-y = 5
+window-padding-balance = true
+window-padding-color = extend
+window-save-state = always
+window-inherit-working-directory = true
+window-colorspace = display-p3
+window-theme = auto
+
+# cursor
+cursor-style = bar
+cursor-style-blink = false
+cursor-opacity = 1.0
+
+# keybind
+keybind = global:ctrl+grave_accent=toggle_quick_terminal
+
+
+# quick terminal
+quick-terminal-position = top
+quick-terminal-screen = mouse
+quick-terminal-autohide = true
+quick-terminal-animation-duration = 0.12
+
+# shell integration
+shell-integration = detect
+shell-integration-features = no-cursor
+scrollback-limit = 10000000
+resize-overlay = after-first
+resize-overlay-position = bottom-right
+resize-overlay-duration = 500ms
+
+# security
+clipboard-paste-protection = true
+clipboard-paste-bracketed-safe = true
