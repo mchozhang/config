@@ -1,10 +1,10 @@
-; uncomment the below and copy [user] to ~/.gitconfig.secret
+; copy and uncomment the below [user] section to ~/.user.gitconfig
 ; [user]
 ;   name =
 ; 	email =
 ; 	signingkey =
 [include]
-    path = ~/.gitconfig.secret
+    path = ~/.user.gitconfig
 [commit]
 	gpgsign = true
 [gpg]
