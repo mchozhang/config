@@ -15,7 +15,7 @@ done
 DRY_RUN="${DRY_RUN:-0}"
 export DRY_RUN
 
-tools=$(get-config -r '[
+tools=$(get-config -re '[
   .tools[] |
   select(.enabled != false) |
   select(.install != null)] |

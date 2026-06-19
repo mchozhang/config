@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# todo: add -f|--force to force install even if not enabled
 set -eu -o pipefail
 
 basedir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

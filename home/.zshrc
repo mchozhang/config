@@ -33,32 +33,12 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 
 autoload -Uz bracketed-paste-magic
 zle -N bracketed-paste bracketed-paste-magic
 
-
-# python
-source "$HOME/.local/pyenvs/py3.14/bin/activate"
-export PYTHONPATH="$HOME/.local/pyenvs/py3.14/bin"
-alias python="python3"
-alias pip="pip3"
-
 # config bootstrap
-config_home="${XDG_CONFIG_HOME:-$HOME/.config/config}"
-config_json="$(yq -o=json '.' "$config_home/config.yaml")"
-tools_json="$(jq -rc '[
-    .tools[] |
-    select(.enabled != false) |
-    select((.bootstrap // "") | length > 0)
-    ] | sort_by(.["bootstrap-priority"] // 100, .name)[]' <<< "$config_json")"
-
-while IFS= read -r tool_json; do
-	bootstrap_cmd="$(jq -r '.bootstrap' <<< "$tool_json")"
-	eval "$bootstrap_cmd"
-done <<< "$tools_json"
+export CONFIG_HOME="$HOME/code/mchozhang/config"
+source "${CONFIG_HOME}/lib/bootstrap.sh"
 
 alias ls="ls --color=auto -G -a"
 alias ll="ls -alFh"
-
-# brew
-export PATH="$(brew --prefix)/bin:$PATH"
 
 # aws scrape
 aws_scrape_path="$HOME/.aws/cli/aws-cli-completion"

@@ -2,6 +2,11 @@
 
 This repo manages local tool configurations. When suggesting changes or generating code, follow these conventions.
 
+## Constraints
+
+- In agent mode, do not run extra commands to perform tasks that I didn't ask for, such as syntax check or code test.
+- If commands are necessary to run to get information, do it conservatively and explain why it's necessary.
+
 ## Coding Style
 
 ### Code Writing Standards
@@ -34,13 +39,14 @@ each tool has below properties:
         git-install https://github.com/romkatv/powerlevel10k.git
   ```
 - `install-priority`: (optional) default 100. lower number are installed first. This is useful when some tools depend on others being installed first.
-- `bootstrap`: (optional) a shell command to run at shell boostrap such as `.zshrc`. For example, for `fzf`:
+- `bootstrap`: (optional) key-value pairs of OS and the respective command to run at shell boostrap such as `.zshrc`. For example, for `fzf`:
   ```yaml
-  bootstrap: |
-    source <(fzf --zsh)
-    source "$HOME/.config/fzf/.fzf.zsh"
+  bootstrap: 
+    default: |
+      source <(fzf --zsh)
+      source "$HOME/.config/fzf/.fzf.zsh"
   ```
-- `bootstrap-priority`: (optional) default 100. lower number priority are sourced first
+- `bootstrap-priority`: (optional) default 100. lower number priority is executed first
 
 ### XDG Config (`xdg/`)
 - Each tool has a subfolder under `xdg/`
@@ -102,5 +108,15 @@ Functions related to installing/upgrading tools defined in `config.yaml`. For ex
 ```sh
 git-install <repo_url>
 ```
+
+### `lib/bootstrap.sh`
+
+- bootstrap all enabled tools with `bootstrap` commands and respective OS defined in `config.yaml`,
+- respecting `bootstrap-priority` to ensure correct execution order
+- meant to be sourced in shell bootstrap files (e.g. `.zshrc`) in shell. For example, the below command can be added to `.zshrc` to bootstrap enabled tools :
+    ```sh
+    export CONFIG_HOME="$HOME/opt/config"
+    source "$CONFIG_HOME/lib/bootstrap.sh"
+    ```
 
 

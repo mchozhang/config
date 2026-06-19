@@ -70,6 +70,48 @@ brew-install() {
   fi
 }
 
+install-brew() {
+  if ! command -v brew > /dev/null 2>&1; then
+    log "Homebrew not found, installing..."
+    if [ "${DRY_RUN:-0}" = "1" ]; then
+      log "[dry-run] install Homebrew"
+    else
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+  else
+    brew update
+  fi
+}
+
+install-python() {
+  # Usage: install-python <version>
+  if [ "$#" -ne 1 ]; then
+    error "usage: install-python <version>"
+    return 1
+  fi
+
+  local version="$1"
+  local dry_run="${DRY_RUN:-0}"
+
+  if ! command -v uv > /dev/null 2>&1; then
+    error "uv not found"
+    return 1
+  fi
+
+  # Match an installed managed Python by major.minor or full version.
+  if uv python list --only-installed --managed-python "$version"; then
+    log "python $version is already installed (uv managed)"
+    return 0
+  fi
+
+  if [ "$dry_run" = "1" ]; then
+    log "[dry-run] install python $version via uv"
+  else
+    log "installing python $version via uv"
+    uv python install "$version" --default
+  fi
+}
+
 link() {
   local src="$1" dst="$2"
   local dry_run="${DRY_RUN:-0}"

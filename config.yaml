@@ -1,5 +1,30 @@
 ---
 tools:
+  - name: brew
+    enabled: true
+    install-priority: 80
+    install:
+      macos: |
+        install-brew
+
+  - name: uv
+    enabled: true
+    install-priority: 90
+    install:
+      macos: |
+        brew-install uv
+
+  - name: python3
+    enabled: true
+    install-priority: 90
+    install:
+      macos: |
+        install-python 3.14
+    bootstrap-priority: 90
+    bootstrap:
+      default: |
+        export PATH="$HOME/.local/bin:$PATH"
+
   - name: powerlevel10k
     install:
       default: |
@@ -7,7 +32,8 @@ tools:
     enabled: true
     install-priority: 100
     bootstrap-priority: 100
-    bootstrap: |
+    bootstrap:
+      default: |
         source "${HOME}/opt/powerlevel10k/powerlevel10k.zsh-theme"
         source "${HOME}/.p10k.zsh"
 
@@ -17,9 +43,10 @@ tools:
       macos: |
         brew-install fzf
     bootstrap-priority: 100
-    bootstrap: |
-      source <(fzf --zsh)
-      source "$HOME/.config/fzf/.fzf.zsh"
+    bootstrap:
+      default: |
+        source <(fzf --zsh)
+        source "$HOME/.config/fzf/.fzf.zsh"
 
   - name: yazi
     enabled: true
@@ -28,15 +55,16 @@ tools:
       macos: |
         brew-install yazi
     bootstrap-priority: 100
-    bootstrap: |
-      function y() {
+    bootstrap:
+      default: |
+        function y() {
           local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
           yazi "$@" --cwd-file="$tmp"
           if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-              builtin cd -- "$cwd"
+            builtin cd -- "$cwd"
           fi
           rm -f -- "$tmp"
-      }
+        }
 
   - name: fast-syntax-highlighting
     enabled: true
@@ -45,8 +73,9 @@ tools:
       default: |
         git-install https://github.com/zdharma-continuum/fast-syntax-highlighting.git "${HOME}/opt/fast-syntax-highlighting"
     bootstrap-priority: 100
-    bootstrap: |
-      source "${HOME}/opt/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+    bootstrap:
+      default: |
+        source "${HOME}/opt/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 
   - name: zsh-autosuggestions
     enabled: true
@@ -55,8 +84,9 @@ tools:
       default: |
         git-install https://github.com/zsh-users/zsh-autosuggestions.git "${HOME}/opt/zsh-autosuggestions"
     bootstrap-priority: 100
-    bootstrap: |
-      source "${HOME}/opt/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    bootstrap:
+      default: |
+        source "${HOME}/opt/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
   - name: fzf-tab-completion
     enabled: true
@@ -65,9 +95,10 @@ tools:
       default: |
         git-install https://github.com/lincheney/fzf-tab-completion.git "${HOME}/opt/fzf-tab-completion"
     bootstrap-priority: 100
-    bootstrap: |
-      source "${HOME}/environment/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
-      bindkey '^I' fzf_completion # Tab key
+    bootstrap:
+      default: |
+        source "${HOME}/environment/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
+        bindkey '^I' fzf_completion # Tab key
 
   - name: bash-my-aws
     enabled: true
@@ -76,9 +107,10 @@ tools:
       default: |
         git-install https://github.com/mbailey/bash-my-aws.git "${HOME}/opt/bash-my-aws"
     bootstrap-priority: 100
-    bootstrap: |
-      export BMA_HOME="${HOME}/opt/bash-my-aws"
-      export PATH="$PATH:${BMA_HOME}/bin"
-      export BMA_COLUMNISE_ONLY_WHEN_TERMINAL_PRESENT=true
-      source ${BMA_HOME}/aliases
-      source ${BMA_HOME}/bash_completion.sh
+    bootstrap:
+      default: |
+        export BMA_HOME="${HOME}/opt/bash-my-aws"
+        export PATH="$PATH:${BMA_HOME}/bin"
+        export BMA_COLUMNISE_ONLY_WHEN_TERMINAL_PRESENT=true
+        source ${BMA_HOME}/aliases
+        source ${BMA_HOME}/bash_completion.sh
