@@ -136,17 +136,17 @@ link() {
   # dst exists as a real file (not already a symlink) — show what differs
   if [ -f "$dst" ] && [ ! -L "$dst" ]; then
     if ! diff -q "$src" "$dst" > /dev/null 2>&1; then
-      echo "diff (existing → new): $dst"
+      log "diff (existing → new): $dst"
       diff --color=auto -u "$dst" "$src" || true
     fi
   fi
 
   if [ "$dry_run" = "1" ]; then
-    echo "[dry-run] would link: $src → $dst"
+    log "[dry-run] would link: $src → $dst"
   else
     mkdir -p "$(dirname "$dst")"
     ln -sf "$src" "$dst"
-    echo "linked: $src → $dst"
+    log "linked: $src → $dst"
   fi
 }
 

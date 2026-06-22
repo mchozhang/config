@@ -19,7 +19,7 @@ export DRY_RUN
 # ── XDG config tools ────────────────────────────────────────────────────────
 # Walk every file/symlink under xdg/ and symlink it into the matching path under ~/.config.
 # Never symlink a folder — this lets external tools write their own files alongside.
-echo "==> XDG"
+log-separator "Syncing XDG config files"
 while IFS= read -r -d '' src; do
   rel="${src#"$basedir/xdg/"}"
   xdg_config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -27,5 +27,5 @@ while IFS= read -r -d '' src; do
   link "$src" "$dst"
 done < <(find "$basedir/xdg" \( -type f -o -type l \) -print0)
 
-echo "==> Done"
+log "XDG config files synced."
 

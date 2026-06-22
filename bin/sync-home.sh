@@ -19,11 +19,12 @@ export DRY_RUN
 # ── Home files (leaf-level only) ─────────────────────────────────────────────
 # Walk every file under home/ and symlink it into the matching path under ~.
 # Never symlink a directory — shared dirs like ~/.local are managed by other tools too.
-echo "==> Home"
+log-separator "Syncing home files"
+
 while IFS= read -r -d '' src; do
   rel="${src#"$basedir/home/"}"
   dst="$HOME/$rel"
   link "$src" "$dst"
 done < <(find "$basedir/home" -type f -print0)
 
-echo "==> Done"
+log "Home files synced."
