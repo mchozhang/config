@@ -6,6 +6,10 @@
       "install-priority": 80,
       "install": {
         "macos": "install-brew\n"
+      },
+      "bootstrap-priority": 80,
+      "bootstrap": {
+        "default": "export PATH=\"$(brew --prefix)/bin:$PATH\"\n"
       }
     },
     {

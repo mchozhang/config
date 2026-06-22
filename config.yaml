@@ -6,6 +6,10 @@ tools:
     install:
       macos: |
         install-brew
+    bootstrap-priority: 80
+    bootstrap:
+      default: |
+        export PATH="$(brew --prefix)/bin:$PATH"
 
   - name: uv
     enabled: true
