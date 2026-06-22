@@ -33,7 +33,7 @@ failed=()
 while IFS= read -r tool; do
   log ""
   log-separator "$tool"
-  if ! "./$basedir/bin/install-tool.sh" "$tool"; then
+  if ! "$basedir/bin/install-tool.sh" "$tool"; then
     warn "Failed to install: $tool"
     failed+=("$tool")
   fi
