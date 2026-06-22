@@ -1,7 +1,7 @@
 
 
-# purple
-log() { ( set +x; printf '\e[1;35m%s\e[m\n' "$*" ) >&2; }
+# blue
+log() { ( set +x; printf '\e[1;34m%s\e[m\n' "$*" ) >&2; }
 
 # yellow
 warn() { ( set +x; printf '\e[1;33m%s\e[m\n' "$*" ) >&2; }
