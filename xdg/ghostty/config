@@ -1,7 +1,7 @@
 theme = "light:Apple System Colors Light,dark:Catppuccin Mocha"
 
 # font
-font-family = ""MesloLGS NF
+font-family = "MesloLGS NF"
 font-size = 16
 font-thicken = false
 font-feature = +calt
