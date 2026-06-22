@@ -66,6 +66,11 @@ each tool has below properties:
 - Scripts must be idempotent and print their actions for auditability
 - use utils function for logging, error handling
 
+### `bin/build-config.sh`
+
+- generate config.lock.json from config.yaml, only convert yaml format to json.
+- output json to stdout in dry-run mode, and to `config.lock.json` file in normal run.
+
 ### `bin/sync-xdg.sh`
 - Syncs all files from `xdg/` to their respective locations in `~/.config/`
 - Creates necessary directories if they don't exist
