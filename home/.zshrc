@@ -34,7 +34,7 @@ autoload -Uz bracketed-paste-magic
 zle -N bracketed-paste bracketed-paste-magic
 
 # config bootstrap
-export CONFIG_HOME="$HOME/code/mchozhang/config"
+export CONFIG_HOME="$HOME/opt/config"
 source "${CONFIG_HOME}/lib/bootstrap.sh"
 
 alias ls="ls --color=auto -G -a"

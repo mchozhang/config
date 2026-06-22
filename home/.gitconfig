@@ -13,7 +13,7 @@
     excludesfile = ~/.gitignore_global
     pager = delta
 [pull]
-    rebase = false
+    ff-only = true
 [push]
     autoSetupRemote = true
 [init]
