@@ -112,6 +112,23 @@ install-python() {
   fi
 }
 
+uv-pip-install() {
+  local dry_run="${DRY_RUN:-0}"
+
+  if ! command -v uv > /dev/null 2>&1; then
+    error "uv not found"
+    return 1
+  fi
+
+  if [ "$dry_run" = "1" ]; then
+    log "[dry-run] install python packages"
+    uv pip install --dry-run "$@"
+  else
+    log "installing python packages."
+    uv pip install "$@"
+  fi
+}
+
 link() {
   local src="$1" dst="$2"
   local dry_run="${DRY_RUN:-0}"
