@@ -33,7 +33,7 @@ get-os() {
 
 get-config() {
   # Usage: get-config [<jq_expression> [jq_args...]]  (defaults to '.' for full document)
-  local config, config_dir
+  local config_dir
   # bash: BASH_SOURCE[0] is the sourced file; zsh: BASH_SOURCE[0] is always empty use print -P '%x' instead
   if [ -n "${BASH_SOURCE[0]:-}" ]; then
     config_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -42,11 +42,9 @@ get-config() {
   fi
 
   if [ -f "$config_dir/config.lock.json" ]; then
-    config="$config_dir/config.lock.json"
-    jq "${@:-.}" "$config"
+    jq "${@:-.}" "$config_dir/config.lock.json"
   elif [ -f "$config_dir/config.yaml" ] && command -v yq >/dev/null; then
-    config="$config_dir/config.yaml"
-    yq -o=json "$config" | jq "${@:-.}"
+    yq -o=json "$config_dir/config.yaml" | jq "${@:-.}"
   else
     error "no config file found. looked for: $config_dir/config.lock.json or $config_dir/config.yaml."
     return 1
