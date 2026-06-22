@@ -44,7 +44,7 @@ get-config() {
   if [ -f "$config_dir/config.lock.json" ]; then
     jq "${@:-.}" "$config_dir/config.lock.json"
   elif [ -f "$config_dir/config.yaml" ] && command -v yq >/dev/null; then
-    yq -o=json "$config_dir/config.yaml" | jq "${@:-.}"
+    yq -o=json "$config_dir/config.yaml" | jq "$@"
   else
     error "no config file found. looked for: $config_dir/config.lock.json or $config_dir/config.yaml."
     return 1
