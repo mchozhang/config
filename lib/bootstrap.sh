@@ -18,12 +18,12 @@ execute-bootstrap-cmd() {
 
 bootstrap-all-tools() {
   local os
-  local steps
   os="$(get-os)"
 
   # Flatten all bootstrap steps across enabled tools, sorted by priority then name
+  local raw_steps
   # shellcheck disable=SC2016
-  steps=$(get-config -rce '
+  raw_steps=$(get-config -rce '
     [
       .tools[] |
       select(.enabled != false and .bootstrap != null) |
@@ -34,9 +34,16 @@ bootstrap-all-tools() {
     sort_by(.priority, .name) | .[]'
   )
 
-  while read -r step; do
+  # Convert raw_steps into an array
+  # keep stdin (TTY) intact for each bootstrap command.
+  local -a steps_arr
+  while IFS= read -r line; do
+    [ -n "$line" ] && steps_arr+=("$line")
+  done <<< "$raw_steps"
+
+  for step in "${steps_arr[@]}"; do
     execute-bootstrap-cmd "$(jq -r --arg os "$os" '.[$os] // .["default"] // empty' <<< "$step")"
-  done <<< "$steps"
+  done
 }
 
 bootstrap-all-tools
