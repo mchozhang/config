@@ -18,22 +18,25 @@ execute-bootstrap-cmd() {
 
 bootstrap-all-tools() {
   local os
-  local tools
+  local steps
   os="$(get-os)"
 
-  # Parse all enabled tools with bootstrap defined, sorted by bootstrap-priority, get compact json of a tool in each line
-  tools=$(get-config -rce '
+  # Flatten all bootstrap steps across enabled tools, sorted by priority then name
+  # shellcheck disable=SC2016
+  steps=$(get-config -rce '
     [
       .tools[] |
       select(.enabled != false and .bootstrap != null) |
-      { name, bootstrap, priority: (."bootstrap-priority" // 100) }
+      .name as $name |
+      .bootstrap[] |
+      . + { name: $name, priority: (.priority // 100) }
     ] |
     sort_by(.priority, .name) | .[]'
   )
 
-  while read -r tool; do
-    execute-bootstrap-cmd "$(jq -r --arg os "$os" '.bootstrap[$os] // .bootstrap["default"] // empty' <<< "$tool")"
-  done <<< "$tools"
+  while read -r step; do
+    execute-bootstrap-cmd "$(jq -r --arg os "$os" '.[$os] // .["default"] // empty' <<< "$step")"
+  done <<< "$steps"
 }
 
 bootstrap-all-tools

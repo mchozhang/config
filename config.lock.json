@@ -7,10 +7,12 @@
       "install": {
         "macos": "install-brew\n"
       },
-      "bootstrap-priority": 80,
-      "bootstrap": {
-        "default": "export PATH=\"$(brew --prefix)/bin:$PATH\"\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 80,
+          "default": "export PATH=\"$(brew --prefix)/bin:$PATH\"\n"
+        }
+      ]
     },
     {
       "name": "uv",
@@ -27,22 +29,30 @@
       "install": {
         "macos": "install-python 3.14\n"
       },
-      "bootstrap-priority": 90,
-      "bootstrap": {
-        "default": "export PATH=\"$HOME/.local/bin:$PATH\"\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 90,
+          "default": "export PATH=\"$HOME/.local/bin:$PATH\"\n"
+        }
+      ]
     },
     {
       "name": "powerlevel10k",
+      "enabled": true,
+      "install-priority": 100,
       "install": {
         "default": "git-install https://github.com/romkatv/powerlevel10k.git \"${HOME}/opt/powerlevel10k\"\n"
       },
-      "enabled": true,
-      "install-priority": 100,
-      "bootstrap-priority": 100,
-      "bootstrap": {
-        "default": "source \"${HOME}/opt/powerlevel10k/powerlevel10k.zsh-theme\"\nsource \"${HOME}/.p10k.zsh\"\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 70,
+          "default": "if [[ -r \"${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh\" ]]; then\n  source \"${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh\"\nfi\n"
+        },
+        {
+          "priority": 100,
+          "default": "source \"${HOME}/opt/powerlevel10k/powerlevel10k.zsh-theme\"\nsource \"${HOME}/.p10k.zsh\"\n"
+        }
+      ]
     },
     {
       "name": "fzf",
@@ -50,10 +60,12 @@
       "install": {
         "macos": "brew-install fzf\n"
       },
-      "bootstrap-priority": 100,
-      "bootstrap": {
-        "default": "source <(fzf --zsh)\nsource \"$HOME/.config/fzf/.fzf.zsh\"\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "source <(fzf --zsh)\nsource \"$HOME/.config/fzf/.fzf.zsh\"\n"
+        }
+      ]
     },
     {
       "name": "yazi",
@@ -62,10 +74,12 @@
       "install": {
         "macos": "brew-install yazi\n"
       },
-      "bootstrap-priority": 100,
-      "bootstrap": {
-        "default": "function y() {\n  local tmp=\"$(mktemp -t \"yazi-cwd.XXXXXX\")\" cwd\n  yazi \"$@\" --cwd-file=\"$tmp\"\n  if cwd=\"$(command cat -- \"$tmp\")\" && [ -n \"$cwd\" ] && [ \"$cwd\" != \"$PWD\" ]; then\n    builtin cd -- \"$cwd\"\n  fi\n  rm -f -- \"$tmp\"\n}\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "function y() {\n  local tmp=\"$(mktemp -t \"yazi-cwd.XXXXXX\")\" cwd\n  yazi \"$@\" --cwd-file=\"$tmp\"\n  if cwd=\"$(command cat -- \"$tmp\")\" && [ -n \"$cwd\" ] && [ \"$cwd\" != \"$PWD\" ]; then\n    builtin cd -- \"$cwd\"\n  fi\n  rm -f -- \"$tmp\"\n}\n"
+        }
+      ]
     },
     {
       "name": "fast-syntax-highlighting",
@@ -74,10 +88,12 @@
       "install": {
         "default": "git-install https://github.com/zdharma-continuum/fast-syntax-highlighting.git \"${HOME}/opt/fast-syntax-highlighting\"\n"
       },
-      "bootstrap-priority": 100,
-      "bootstrap": {
-        "default": "source \"${HOME}/opt/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh\"\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "source \"${HOME}/opt/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh\"\n"
+        }
+      ]
     },
     {
       "name": "zsh-autosuggestions",
@@ -86,10 +102,12 @@
       "install": {
         "default": "git-install https://github.com/zsh-users/zsh-autosuggestions.git \"${HOME}/opt/zsh-autosuggestions\"\n"
       },
-      "bootstrap-priority": 100,
-      "bootstrap": {
-        "default": "source \"${HOME}/opt/zsh-autosuggestions/zsh-autosuggestions.zsh\"\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "source \"${HOME}/opt/zsh-autosuggestions/zsh-autosuggestions.zsh\"\n"
+        }
+      ]
     },
     {
       "name": "fzf-tab-completion",
@@ -98,10 +116,12 @@
       "install": {
         "default": "git-install https://github.com/lincheney/fzf-tab-completion.git \"${HOME}/opt/fzf-tab-completion\"\n"
       },
-      "bootstrap-priority": 100,
-      "bootstrap": {
-        "default": "source \"${HOME}/environment/fzf-tab-completion/zsh/fzf-zsh-completion.sh\"\nbindkey '^I' fzf_completion # Tab key\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "source \"${HOME}/environment/fzf-tab-completion/zsh/fzf-zsh-completion.sh\"\nbindkey '^I' fzf_completion # Tab key\n"
+        }
+      ]
     },
     {
       "name": "bash-my-aws",
@@ -110,10 +130,12 @@
       "install": {
         "default": "git-install https://github.com/mbailey/bash-my-aws.git \"${HOME}/opt/bash-my-aws\"\n"
       },
-      "bootstrap-priority": 100,
-      "bootstrap": {
-        "default": "export BMA_HOME=\"${HOME}/opt/bash-my-aws\"\nexport PATH=\"$PATH:${BMA_HOME}/bin\"\nexport BMA_COLUMNISE_ONLY_WHEN_TERMINAL_PRESENT=true\nsource ${BMA_HOME}/aliases\nsource ${BMA_HOME}/bash_completion.sh\n"
-      }
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "export BMA_HOME=\"${HOME}/opt/bash-my-aws\"\nexport PATH=\"$PATH:${BMA_HOME}/bin\"\nexport BMA_COLUMNISE_ONLY_WHEN_TERMINAL_PRESENT=true\nsource ${BMA_HOME}/aliases\nsource ${BMA_HOME}/bash_completion.sh\n"
+        }
+      ]
     }
   ]
 }

@@ -32,21 +32,21 @@ each tool has below properties:
    # for macos
    install:
      macos: |
-         brew-install fzf
+       brew-install fzf
     # for any os
   install:
     default: |
-        git-install https://github.com/romkatv/powerlevel10k.git
+      git-install https://github.com/romkatv/powerlevel10k.git
   ```
 - `install-priority`: (optional) default 100. lower number are installed first. This is useful when some tools depend on others being installed first.
-- `bootstrap`: (optional) key-value pairs of OS and the respective command to run at shell boostrap such as `.zshrc`. For example, for `fzf`:
+- `bootstrap`: (optional) a list of bootstrap steps, each step has `priority`(by default 100) and key-value pairs of OS(`default` for all OSs) and the respective command to run at shell boostrap(e.g. `.zshrc`, `.bashrc`). For example, for `fzf`:
   ```yaml
-  bootstrap: 
-    default: |
-      source <(fzf --zsh)
-      source "$HOME/.config/fzf/.fzf.zsh"
+  bootstrap:
+    - priority: 100
+      default: |
+        source <(fzf --zsh)
+        source "$HOME/.config/fzf/.fzf.zsh"    
   ```
-- `bootstrap-priority`: (optional) default 100. lower number priority is executed first
 
 ### XDG Config (`xdg/`)
 - Each tool has a subfolder under `xdg/`
