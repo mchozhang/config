@@ -10,17 +10,27 @@
       "bootstrap": [
         {
           "priority": 80,
-          "default": "export PATH=\"$(brew --prefix)/bin:$PATH\"\n"
+          "macos": "export PATH=\"$(brew --prefix)/bin:$PATH\"\n"
         }
       ]
     },
     {
       "name": "apt",
-      "enabled": false,
+      "enabled": true,
       "install-priority": 80,
       "install": {
         "ubuntu": "sudo apt update\n"
       }
+    },
+    {
+      "name": "snap",
+      "enabled": true,
+      "bootstrap": [
+        {
+          "priority": 80,
+          "ubuntu": "export PATH=\"/snap/bin:$PATH\"\n"
+        }
+      ]
     },
     {
       "name": "zsh",
@@ -50,7 +60,7 @@
       "enabled": true,
       "install-priority": 90,
       "install": {
-        "macos": "install-python 3.14\n"
+        "default": "install-python 3.14\n"
       },
       "bootstrap": [
         {
@@ -78,8 +88,24 @@
       ]
     },
     {
+      "name": "gpg",
+      "enabled": true,
+      "install-priority": 100,
+      "install": {
+        "macos": "brew-install gnupg\nbrew-install pinentry\nmkdir -p \"$HOME/.gnupg\"\nchmod 700 \"$HOME/.gnupg\"\nif command -v pinentry-mac >/dev/null 2>&1 && ! grep -q 'pinentry-program' \"$HOME/.gnupg/gpg-agent.conf\"; then\n  printf 'pinentry-program %s\\n' \"$(command -v pinentry-mac)\" > \"$HOME/.gnupg/gpg-agent.conf\"\nfi\n",
+        "ubuntu": "apt-install pinentry-curses\napt-install pinentry-tty\ngpgconf --kill gpg-agent\nmkdir -p \"$HOME/.gnupg\"\nchmod 700 \"$HOME/.gnupg\"\nif command -v pinentry-curses >/dev/null 2>&1 && ! grep -q 'pinentry-program' \"$HOME/.gnupg/gpg-agent.conf\"; then\n  printf 'pinentry-program %s\\n' \"$(command -v pinentry-curses)\" > \"$HOME/.gnupg/gpg-agent.conf\"\nfi\ngpgconf --kill gpg-agent\ngpg-connect-agent updatestartuptty /bye\n"
+      },
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "if tty -s; then\n  export GPG_TTY=\"$(tty)\"\n  gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1 || true\nfi\n"
+        }
+      ]
+    },
+    {
       "name": "fzf",
       "enabled": true,
+      "install-priority": 100,
       "install": {
         "macos": "brew-install fzf\n",
         "ubuntu": "apt-install fzf\n"
@@ -90,6 +116,45 @@
           "default": "source <(fzf --zsh)\nsource \"$HOME/.config/fzf/.fzf.zsh\"\n"
         }
       ]
+    },
+    {
+      "name": "zoxide",
+      "enabled": true,
+      "install-priority": 100,
+      "install": {
+        "macos": "brew-install zoxide\n",
+        "ubuntu": "apt-install zoxide\n"
+      },
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "eval \"$(zoxide init zsh)\"\n"
+        }
+      ]
+    },
+    {
+      "name": "bat",
+      "enabled": true,
+      "install-priority": 100,
+      "install": {
+        "macos": "brew-install bat\n",
+        "ubuntu": "apt-install bat\n"
+      },
+      "bootstrap": [
+        {
+          "priority": 100,
+          "default": "export MANPAGER=\"sh -c 'col -bx | bat -l man -p'\" export BAT_THEME=\"Catppuccin Macchiato\" alias cat=\"bat --paging=never --plain\" alias less=\"bat -p\""
+        }
+      ]
+    },
+    {
+      "name": "delta",
+      "enabled": true,
+      "install-priority": 100,
+      "install": {
+        "macos": "brew-install git-delta\n",
+        "ubuntu": "apt-install git-delta\n"
+      }
     },
     {
       "name": "yazi",
@@ -144,7 +209,7 @@
       "bootstrap": [
         {
           "priority": 100,
-          "default": "source \"${HOME}/environment/fzf-tab-completion/zsh/fzf-zsh-completion.sh\"\nbindkey '^I' fzf_completion # Tab key\n"
+          "default": "source \"${HOME}/opt/fzf-tab-completion/zsh/fzf-zsh-completion.sh\"\nbindkey '^I' fzf_completion # Tab key\n"
         }
       ]
     },

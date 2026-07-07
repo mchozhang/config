@@ -8,15 +8,22 @@ tools:
         install-brew
     bootstrap:
       - priority: 80
-        default: |
+        macos: |
           export PATH="$(brew --prefix)/bin:$PATH"
 
   - name: apt
-    enabled: false
+    enabled: true
     install-priority: 80
     install:
       ubuntu: |
         sudo apt update
+  
+  - name: snap
+    enabled: true
+    bootstrap:
+      - priority: 80
+        ubuntu: |
+          export PATH="/snap/bin:$PATH"
 
   - name: zsh
     enabled: true
@@ -79,7 +86,7 @@ tools:
     enabled: true
     install-priority: 90
     install:
-      macos: |
+      default: |
         install-python 3.14
     bootstrap:
       - priority: 90
@@ -103,8 +110,41 @@ tools:
           source "${HOME}/opt/powerlevel10k/powerlevel10k.zsh-theme"
           source "${HOME}/.p10k.zsh"
 
+  - name: gpg
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install gnupg
+        brew-install pinentry
+        mkdir -p "$HOME/.gnupg"
+        chmod 700 "$HOME/.gnupg"
+        if command -v pinentry-mac >/dev/null 2>&1 && ! grep -q 'pinentry-program' "$HOME/.gnupg/gpg-agent.conf"; then
+          printf 'pinentry-program %s\n' "$(command -v pinentry-mac)" > "$HOME/.gnupg/gpg-agent.conf"
+        fi
+      ubuntu: |
+        apt-install pinentry-curses
+        apt-install pinentry-tty
+        gpgconf --kill gpg-agent
+        mkdir -p "$HOME/.gnupg"
+        chmod 700 "$HOME/.gnupg"
+        if command -v pinentry-curses >/dev/null 2>&1 && ! grep -q 'pinentry-program' "$HOME/.gnupg/gpg-agent.conf"; then
+          printf 'pinentry-program %s\n' "$(command -v pinentry-curses)" > "$HOME/.gnupg/gpg-agent.conf"
+        fi
+        gpgconf --kill gpg-agent
+        gpg-connect-agent updatestartuptty /bye
+    bootstrap:
+      - priority: 100
+        default: |
+          if tty -s; then
+            export GPG_TTY="$(tty)"
+            gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1 || true
+          fi
+
+
   - name: fzf
     enabled: true
+    install-priority: 100
     install:
       macos: |
         brew-install fzf
@@ -115,6 +155,45 @@ tools:
         default: |
           source <(fzf --zsh)
           source "$HOME/.config/fzf/.fzf.zsh"
+
+  - name: zoxide
+    enabled: true
+    install-priority: 100
+    install: 
+      macos: | 
+        brew-install zoxide
+      ubuntu: |
+        apt-install zoxide
+    bootstrap:
+      - priority: 100
+        default: |
+          eval "$(zoxide init zsh)"
+  
+  - name: bat
+    enabled: true
+    install-priority: 100
+    install: 
+      macos: |
+        brew-install bat
+      ubuntu: |
+        apt-install bat
+    bootstrap:
+      - priority: 100
+        default:
+          export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+          export BAT_THEME="Catppuccin Macchiato"
+          alias cat="bat --paging=never --plain"
+          alias less="bat -p"
+
+  - name: delta
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install git-delta
+      ubuntu: |
+        apt-install git-delta
+
 
   - name: yazi
     enabled: true
@@ -167,7 +246,7 @@ tools:
     bootstrap:
       - priority: 100
         default: |
-          source "${HOME}/environment/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
+          source "${HOME}/opt/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
           bindkey '^I' fzf_completion # Tab key
 
   - name: bash-my-aws

@@ -16,17 +16,8 @@ for i in "$HOME"/.local/lib/*; do
 	source "$i"
 done
 
-# zoxide
-eval "$(zoxide init zsh)"
-
 # vim
 alias v="vim"
-
-# bat
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-export BAT_THEME="Catppuccin Macchiato"
-alias cat="bat --paging=never --plain"
-alias less="bat -p"
 
 # aws auto complete
 complete -C '/usr/local/bin/aws_completer' aws
@@ -48,7 +39,6 @@ export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 
 # gnu coreutils
 export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
-
 
 # curl
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
@@ -72,9 +62,6 @@ alias xargs="gxargs"
 # gnu-getopt
 export PATH="/opt/homebrew/opt/gnu-getopt/bin:$PATH"
 
-# gpg
-export GPG_TTY="$(tty)"
-
 # tree
 alias tree="tree -C"
 
@@ -83,9 +70,6 @@ export PATH="$PATH:$HOME/.dotnet/tools"
 
 # terraform
 complete -o nospace -C /usr/local/bin/terraform terraform
-
-# csi
-export PATH="$PATH:$HOME/environment/csi/bin"
 
 # uncomment to test launch time
 # zprof
