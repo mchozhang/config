@@ -1,31 +1,5 @@
 #!/usr/bin/env zsh
 
-# zsh mod
-zmodload zsh/zprof
-zmodload zsh/mathfunc 
-
-# disable zsh history expansion triggered by "!" character
-setopt no_bang_hist
-
-# hide history with space
-setopt HIST_IGNORE_SPACE
-
-# initialize zsh completion engine and bash-compatibility bridge
-autoload -Uz compinit
-if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
-    compinit
-else
-    compinit -C
-fi
-autoload -Uz bashcompinit && bashcompinit
-
-# zsh case insensitive completion
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-
-# Enable bracketed paste magic to handle long text safely, speed up paste
-autoload -Uz bracketed-paste-magic
-zle -N bracketed-paste bracketed-paste-magic
-
 # config bootstrap
 export CONFIG_HOME="$HOME/opt/config"
 source "${CONFIG_HOME}/lib/bootstrap.sh"

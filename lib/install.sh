@@ -129,6 +129,64 @@ uv-pip-install() {
   fi
 }
 
+apt-install() {
+  # Usage: apt-install <package>
+  if [ "$#" -ne 1 ]; then
+    error "usage: apt-install <package>"
+    return 1
+  fi
+
+  local package="$1"
+  local dry_run="${DRY_RUN:-0}"
+
+  if dpkg -s "$package" > /dev/null 2>&1; then
+    log "$package is already installed, checking for updates..."
+    if [ "$dry_run" = "1" ]; then
+      log "[dry-run] apt update && apt upgrade $package"
+    else
+      log "upgrading $package"
+      sudo apt install --only-upgrade "$package"
+    fi
+  else
+    if [ "$dry_run" = "1" ]; then
+      log "[dry-run] apt install $package"
+    else
+      log "installing $package"
+      sudo apt install -y "$package"
+    fi
+  fi
+}
+
+snap-install() {
+  # Usage: snap-install <package> [extra snap install args...]
+  if [ "$#" -lt 1 ]; then
+    error "usage: snap-install <package> [args...]"
+    return 1
+  fi
+
+  local package="$1"; shift
+  local dry_run="${DRY_RUN:-0}"
+
+  if snap list "$package" > /dev/null 2>&1; then
+    log "$package is already installed, checking for updates..."
+    if [ "$dry_run" = "1" ]; then
+      log "[dry-run] snap refresh $package"
+      snap refresh --list || true
+    else
+      log "upgrading $package"
+      sudo snap refresh "$package" "$@"
+    fi
+  else
+    if [ "$dry_run" = "1" ]; then
+      log "[dry-run] snap install $package${*:+ $*}"
+      snap info "$package" || true
+    else
+      log "installing $package"
+      sudo snap install "$package" "$@"
+    fi
+  fi
+}
+
 link() {
   local src="$1" dst="$2"
   local dry_run="${DRY_RUN:-0}"
