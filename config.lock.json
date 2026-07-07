@@ -15,11 +15,34 @@
       ]
     },
     {
+      "name": "apt",
+      "enabled": false,
+      "install-priority": 80,
+      "install": {
+        "ubuntu": "sudo apt update\n"
+      }
+    },
+    {
+      "name": "zsh",
+      "enabled": true,
+      "install-priority": 80,
+      "install": {
+        "ubuntu": "apt-install zsh\n"
+      },
+      "bootstrap": [
+        {
+          "priority": 80,
+          "default": "# zsh mod\nzmodload zsh/zprof\nzmodload zsh/mathfunc \n\n# disable zsh history expansion triggered by \"!\" character\nsetopt no_bang_hist\n\n# hide history with space\nsetopt HIST_IGNORE_SPACE\n\n# initialize zsh completion engine and bash-compatibility bridge\nautoload -Uz compinit\nif [ \"$(date +'%j')\" != \"$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)\" ]; then\n    compinit\nelse\n    compinit -C\nfi\nautoload -Uz bashcompinit && bashcompinit\n\n# zsh case insensitive completion\nzstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'\n\n# Enable bracketed paste magic to handle long text safely, speed up paste\nautoload -Uz bracketed-paste-magic\nzle -N bracketed-paste bracketed-paste-magic\n"
+        }
+      ]
+    },
+    {
       "name": "uv",
       "enabled": true,
       "install-priority": 90,
       "install": {
-        "macos": "brew-install uv\n"
+        "macos": "brew-install uv\n",
+        "ubuntu": "if command -v uv >/dev/null 2>&1; then\n  log \"uv is already installed\"\n  if [ \"${DRY_RUN:-0}\" = \"1\" ]; then\n    log \"[dry-run] uv self update\"\n  else\n    uv self update\n  fi\nelse\n  if [ \"${DRY_RUN:-0}\" = \"1\" ]; then\n    log \"[dry-run] install uv via curl\"\n  else\n    curl -LsSf https://astral.sh/uv/install.sh | sh\n  fi\nfi\n"
       }
     },
     {
@@ -58,7 +81,8 @@
       "name": "fzf",
       "enabled": true,
       "install": {
-        "macos": "brew-install fzf\n"
+        "macos": "brew-install fzf\n",
+        "ubuntu": "apt-install fzf\n"
       },
       "bootstrap": [
         {
@@ -72,7 +96,8 @@
       "enabled": true,
       "install-priority": 100,
       "install": {
-        "macos": "brew-install yazi\n"
+        "macos": "brew-install yazi\n",
+        "ubuntu": "snap-install yazi --classic\n"
       },
       "bootstrap": [
         {
