@@ -98,7 +98,7 @@
       "bootstrap": [
         {
           "priority": 100,
-          "default": "if tty -s; then\n  export GPG_TTY=\"$(tty)\"\n  gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1 || true\nfi\n"
+          "default": "export GPG_TTY=\"$TTY\"\n"
         }
       ]
     },
