@@ -17,7 +17,9 @@ tools:
     install:
       ubuntu: |
         sudo apt update
-  
+        apt-install build-essential
+        apt-install ca-certificates
+
   - name: snap
     enabled: true
     bootstrap:
@@ -59,8 +61,11 @@ tools:
           autoload -Uz bracketed-paste-magic
           zle -N bracketed-paste bracketed-paste-magic
 
-          # define word characters for completion and history search
+          # special characters for word boundaries in zsh
           WORDCHARS=''
+          
+          alias ls="ls --color=auto -G -a"
+          alias ll="ls -alFh"
 
   - name: uv
     enabled: true
@@ -94,7 +99,7 @@ tools:
       - priority: 90
         default: |
           export PATH="$HOME/.local/bin:$PATH"
-  
+
   - name: gnu-utils
     enabled: true
     install-priority: 90
@@ -115,6 +120,24 @@ tools:
 
           alias grep="ggrep --color=auto"
           alias time="gtime -p"
+
+  - name: n
+    enabled: true
+    install-priority: 90
+    install:
+      macos: |
+        brew-install n
+      ubuntu: |
+        if [ "${DRY_RUN:-0}" = "1" ]; then
+          log "[dry-run] install n via curl"
+        else
+          curl -L https://bit.ly/n-install | bash
+        fi
+    bootstrap:
+      - priority: 90
+        default: |
+          export N_PREFIX="$HOME/.n"
+          export PATH="$N_PREFIX/bin:$PATH"
 
   - name: powerlevel10k
     enabled: true
@@ -178,8 +201,8 @@ tools:
   - name: zoxide
     enabled: true
     install-priority: 100
-    install: 
-      macos: | 
+    install:
+      macos: |
         brew-install zoxide
       ubuntu: |
         apt-install zoxide
@@ -187,11 +210,11 @@ tools:
       - priority: 100
         default: |
           eval "$(zoxide init zsh)"
-  
+
   - name: bat
     enabled: true
     install-priority: 100
-    install: 
+    install:
       macos: |
         brew-install bat
       ubuntu: |
@@ -266,7 +289,7 @@ tools:
         default: |
           source "${HOME}/opt/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
           bindkey '^I' fzf_completion # Tab key
-  
+
   - name: aws
     enabled: true
     install-priority: 100
@@ -297,3 +320,36 @@ tools:
           source ${BMA_HOME}/aliases
           source ${BMA_HOME}/bash_completion.sh
 
+  - name: curl
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install curl
+    bootstrap:
+      - priority: 100
+        macos: |
+          export PATH="$(brew --prefix curl)/bin:$PATH"
+
+  - name: openssl
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install curl
+    bootstrap:
+      - priority: 100
+        macos: |
+          export PATH="$(brew --prefix openssl)/bin:$PATH"
+
+  - name: apps
+    enabled: true
+    bootstrap:
+      - priority: 100
+        macos: |
+          export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+          alias idea="open -a 'IntelliJ IDEA'"
+          alias pycharm="open -a 'Pycharm'"
+          alias webstorm="open -a webstorm"
+          alias goland="open -a goland"
+          alias rider="open -a rider"
