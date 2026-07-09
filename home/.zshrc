@@ -19,9 +19,6 @@ done
 # vim
 alias v="vim"
 
-# aws auto complete
-complete -C '/usr/local/bin/aws_completer' aws
-
 # go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$PATH
@@ -34,33 +31,16 @@ alias webstorm="open -a webstorm"
 alias goland="open -a goland"
 alias rider="open -a rider"
 
-# gnu-sed
-export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
-
-# gnu coreutils
-export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 
 # curl
-export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+#export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
 # openssl
-export PATH="/opt/homebrew/opt/openssl/bin:$PATH"
+#export PATH="/opt/homebrew/opt/openssl/bin:$PATH"
 
 # n
 export N_PREFIX=$HOME/.n
 export PATH="$N_PREFIX/bin:$PATH"
-
-# grep 
-alias grep="ggrep --color=auto"
-
-# gtime
-alias time="gtime -p"
-
-# gxargs
-alias xargs="gxargs"
-
-# gnu-getopt
-export PATH="/opt/homebrew/opt/gnu-getopt/bin:$PATH"
 
 # tree
 alias tree="tree -C"

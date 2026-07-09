@@ -46,3 +46,9 @@
     file-style = bold cyan box
     file-decoration-style = none
     hunk-header-decoration-style = ul
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

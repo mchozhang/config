@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Compiles config.yaml into config.lock.json for use without yq dependency.
+# Builds config.lock.json by merging tools from config.yaml and config.local.yaml.
 
 set -eu -o pipefail
 
@@ -22,10 +22,23 @@ if ! command -v yq >/dev/null 2>&1; then
 fi
 
 output="$basedir/config.lock.json"
+base_config="$basedir/config.yaml"
+input_files=("$base_config")
+
+for f in "$basedir"/config.*.yaml; do
+  [ -f "$f" ] && input_files+=("$f")
+done
+
+# Merge tools from both files and keep one entry per tool name, preferring local.
+# yq emits one JSON document per input file; jq performs cross-file merge.
+merge_jq_expr='map(.tools // [])
+  | add
+  | { tools: [INDEX(.[]; .name)[]] }'
+
 if [ "$DRY_RUN" = "1" ]; then
   log "[dry-run] would write: $output"
-  yq -o=json "$basedir/config.yaml" | jq
+  yq ea -o=json '.' "${input_files[@]}" | jq -s "$merge_jq_expr"
 else
-  yq -o=json "$basedir/config.yaml" | jq | tee "$output"
+  yq ea -o=json '.' "${input_files[@]}" | jq -s "$merge_jq_expr" | tee "$output"
   log "built json config at ${basedir}/config.lock.json"
 fi

@@ -66,9 +66,24 @@ each tool has below properties:
 - Scripts must be idempotent and print their actions for auditability
 - use utils function for logging, error handling
 
-### `bin/build-config.sh`
+### `bin/build-json-config.sh`
 
-- generate config.lock.json from config.yaml, only convert yaml format to json.
+- generate config.lock.json from `config.*.yaml` and `config.yaml`, combine tools in those yaml into a single json array and convert yaml format to json. If there are duplicates, the last one wins.
+Expected output format example:
+```json
+{
+  "tools": [
+    {
+      "name": "fzf",
+      ...
+    },
+    {
+      "name": "ghostty",
+      ...
+    }
+  ]
+}
+```
 - output json to stdout in dry-run mode, and to `config.lock.json` file in normal run.
 
 ### `bin/sync-xdg.sh`

@@ -43,10 +43,21 @@ get-config() {
 
   if [ -f "$config_dir/config.lock.json" ]; then
     jq "${@:-.}" "$config_dir/config.lock.json"
-  elif [ -f "$config_dir/config.yaml" ] && command -v yq >/dev/null; then
-    yq -o=json "$config_dir/config.yaml" | jq "$@"
+  elif command -v yq >/dev/null; then
+    local base_config="$config_dir/config.yaml"
+    local input_files=("$base_config")
+
+    for f in "$config_dir"/config.*.yaml; do
+      [ -f "$f" ] && input_files+=("$f")
+    done
+
+    merge_jq_expr='map(.tools // [])
+      | add
+      | { tools: [INDEX(.[]; .name)[]] }'
+    
+    yq ea -o=json '.' "${input_files[@]}" | jq -s "$merge_jq_expr" | jq "${@:-.}"
   else
-    error "no config file found. looked for: $config_dir/config.lock.json or $config_dir/config.yaml."
+    error "no config file found. looked for: $config_dir/config.lock.json, $config_dir/config.yaml, or $config_dir/config.*.yaml."
     return 1
   fi
 }

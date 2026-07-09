@@ -38,11 +38,10 @@ tools:
           zmodload zsh/zprof
           zmodload zsh/mathfunc 
 
-          # disable zsh history expansion triggered by "!" character
-          setopt no_bang_hist
-
-          # hide history with space
-          setopt HIST_IGNORE_SPACE
+          # interactive comment with '#'
+          # disable bang history expansion with '!'
+          # Ignore history entries that start with a space
+          setopt INTERACTIVE_COMMENTS NO_BANG_HIST HIST_IGNORE_SPACE
 
           # initialize zsh completion engine and bash-compatibility bridge
           autoload -Uz compinit
@@ -59,6 +58,9 @@ tools:
           # Enable bracketed paste magic to handle long text safely, speed up paste
           autoload -Uz bracketed-paste-magic
           zle -N bracketed-paste bracketed-paste-magic
+
+          # define word characters for completion and history search
+          WORDCHARS=''
 
   - name: uv
     enabled: true
@@ -92,6 +94,27 @@ tools:
       - priority: 90
         default: |
           export PATH="$HOME/.local/bin:$PATH"
+  
+  - name: gnu-utils
+    enabled: true
+    install-priority: 90
+    install:
+      macos: |
+        brew-install coreutils
+        brew-install findutils
+        brew-install gnu-sed
+        brew-install gnu-time
+        brew-install gnu-getopt
+    bootstrap:
+      - priority: 90
+        macos: |
+          BREW_PREFIX="$(brew --prefix)"
+          export PATH="$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"
+          export PATH="$BREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"
+          export PATH="$BREW_PREFIX/opt/gnu-getopt/bin:$PATH"
+
+          alias grep="ggrep --color=auto"
+          alias time="gtime -p"
 
   - name: powerlevel10k
     enabled: true
@@ -190,7 +213,6 @@ tools:
       ubuntu: |
         apt-install git-delta
 
-
   - name: yazi
     enabled: true
     install-priority: 100
@@ -244,6 +266,21 @@ tools:
         default: |
           source "${HOME}/opt/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
           bindkey '^I' fzf_completion # Tab key
+  
+  - name: aws
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install awscli
+      ubuntu: |
+        snap-install aws-cli --classic
+    bootstrap:
+      - priority: 100
+        macos: |
+          complete -C '/usr/local/bin/aws_completer' aws
+        ubuntu: |
+          complete -C '/snap/aws-cli/current/bin/aws_completer' aws
 
   - name: bash-my-aws
     enabled: true
@@ -259,3 +296,4 @@ tools:
           export BMA_COLUMNISE_ONLY_WHEN_TERMINAL_PRESENT=true
           source ${BMA_HOME}/aliases
           source ${BMA_HOME}/bash_completion.sh
+

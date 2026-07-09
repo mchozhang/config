@@ -99,7 +99,7 @@ install-python() {
   fi
 
   # Match an installed managed Python by major.minor or full version.
-  if uv python list --only-installed --managed-python "$version"; then
+  if uv python list --only-installed --managed-python "$version" | grep -q .; then
     log "python $version is already installed (uv managed)"
     return 0
   fi
