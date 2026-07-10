@@ -74,20 +74,7 @@ tools:
       macos: |
         brew-install uv
       ubuntu: |
-        if command -v uv >/dev/null 2>&1; then
-          log "uv is already installed"
-          if [ "${DRY_RUN:-0}" = "1" ]; then
-            log "[dry-run] uv self update"
-          else
-            uv self update
-          fi
-        else
-          if [ "${DRY_RUN:-0}" = "1" ]; then
-            log "[dry-run] install uv via curl"
-          else
-            curl -LsSf https://astral.sh/uv/install.sh | sh
-          fi
-        fi
+        curl-install -LsSf https://astral.sh/uv/install.sh | sh
 
   - name: python3
     enabled: true
@@ -128,11 +115,7 @@ tools:
       macos: |
         brew-install n
       ubuntu: |
-        if [ "${DRY_RUN:-0}" = "1" ]; then
-          log "[dry-run] install n via curl"
-        else
-          curl -L https://bit.ly/n-install | bash
-        fi
+        curl-install -L https://bit.ly/n-install | bash
     bootstrap:
       - priority: 90
         default: |
@@ -219,9 +202,10 @@ tools:
         brew-install bat
       ubuntu: |
         apt-install bat
+        link /usr/bin/batcat "$HOME/.local/bin/bat"
     bootstrap:
       - priority: 100
-        default:
+        default: |
           export MANPAGER="sh -c 'col -bx | bat -l man -p'"
           export BAT_THEME="Catppuccin Macchiato"
           alias cat="bat --paging=never --plain"
@@ -330,13 +314,31 @@ tools:
       - priority: 100
         macos: |
           export PATH="$(brew --prefix curl)/bin:$PATH"
+  
+  - name: fd
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install fd
+      ubuntu: |
+        apt-install fd-find
+  
+  - name: ripgrep
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install ripgrep
+      ubuntu: |
+        apt-install ripgrep
 
   - name: openssl
     enabled: true
     install-priority: 100
     install:
       macos: |
-        brew-install curl
+        brew-install openssl
     bootstrap:
       - priority: 100
         macos: |
@@ -350,6 +352,6 @@ tools:
           export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
           alias idea="open -a 'IntelliJ IDEA'"
           alias pycharm="open -a 'Pycharm'"
-          alias webstorm="open -a webstorm"
-          alias goland="open -a goland"
-          alias rider="open -a rider"
+          alias webstorm="open -a 'WebStorm'"
+          alias goland="open -a 'GoLand'"
+          alias rider="open -a 'Rider'"

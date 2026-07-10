@@ -187,6 +187,15 @@ snap-install() {
   fi
 }
 
+curl-install() {
+  local dry_run="${DRY_RUN:-0}"
+  if [ "$dry_run" = "1" ]; then
+    echo echo "[dry-run] curl $@"
+  else
+    curl "$@"
+  fi
+}
+
 link() {
   local src="$1" dst="$2"
   local dry_run="${DRY_RUN:-0}"

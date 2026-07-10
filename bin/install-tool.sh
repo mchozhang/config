@@ -30,7 +30,7 @@ fi
 
 tool_config="$(get-tool-config "$tool")"
 enabled="$(jq -re '.enabled // true' <<< "$tool_config")"
-install_cmd="$(jq -re --arg os "$os" '.install[$os] // .install["default"] // empty' <<< "$tool_config")"
+install_cmd="$(jq -r --arg os "$os" '.install[$os] // .install["default"] // empty' <<< "$tool_config")"
 
 if [ "$enabled" != "true" ]; then
   log "skipping $tool (disabled)"
@@ -38,8 +38,8 @@ if [ "$enabled" != "true" ]; then
 fi
 
 if [ -z "$install_cmd" ]; then
-  error "no install command for $tool on $os"
-  exit 1
+  warn "No install command found for $tool on $os, skip installation."
+  exit 2
 fi
 
 
