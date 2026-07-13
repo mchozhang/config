@@ -40,6 +40,12 @@ tools:
           zmodload zsh/zprof
           zmodload zsh/mathfunc 
 
+          # history
+          HISTFILE="$HOME/.zsh_history"
+          HISTSIZE=10000
+          SAVEHIST=10000
+          setopt APPEND_HISTORY INC_APPEND_HISTORY HIST_IGNORE_DUPS
+
           # interactive comment with '#'
           # disable bang history expansion with '!'
           # Ignore history entries that start with a space
