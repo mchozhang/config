@@ -23,8 +23,15 @@ This repo manages local tool configurations. When suggesting changes or generati
 
 ### config file
 
-`config.yaml` defines tools to install and their config.
-each tool has below properties:
+config files are `config.yaml` and `config.*.yaml`, which define tools to install and their config. 
+Each config file has below properties:
+- `enabled`: true by default, whether to enable this config file (true/false), if disabled, all tools defined in this config file will be ignored even if they are enabled individually.
+- `priority`: 100 by default, lower number means higher priority. If multiple config files define the same tool, the one with higher priority will be used.
+- `tools`: an array of tools' config
+
+
+### tools
+`tools` defines an array of tools' config, each tool has below properties:
 - `name`: (mandatory) tool name, must match the folder name under `xdg/` if it has one. For example, `fzf` or `ghostty`.
 - `enabled`: `true` by default, whether to install/sync this tool's config (true/false).
 - `install`: (optional) key-value pairs of OS and the respective command to install the tool. For example:
@@ -107,12 +114,12 @@ Expected output format example:
 
 - parameter: 
   - name: (mandatory) tool name
-- parse `config.yaml` to get tools that are enabled with `install` commands defined
+- parse config files to get tools that are enabled with `install` commands defined
 - execute install commands for the current OS
 
 ### `bin/install-all-tools.sh`
 
-- parse `config.yaml` to get all tools that are enabled with `install` commands defined
+- parse config files to get all tools that are enabled with `install` commands defined
 - invoke `bin/install-tool.sh` for each tool, respecting `install-priority` to ensure correct installation order
 
 ### `lib/utils.sh`
@@ -124,14 +131,14 @@ source "$(dirname "$0")/../lib/utils.sh"
 
 ### `lib/install.sh`
 
-Functions related to installing/upgrading tools defined in `config.yaml`. For example:
+Functions related to installing/upgrading tools defined in config files. For example:
 ```sh
 git-install <repo_url>
 ```
 
 ### `lib/bootstrap.sh`
 
-- bootstrap all enabled tools with `bootstrap` commands and respective OS defined in `config.yaml`,
+- bootstrap all enabled tools with `bootstrap` commands and respective OS defined in config files,
 - respecting `bootstrap-priority` to ensure correct execution order
 - meant to be sourced in shell bootstrap files (e.g. `.zshrc`) in shell. For example, the below command can be added to `.zshrc` to bootstrap enabled tools :
     ```sh

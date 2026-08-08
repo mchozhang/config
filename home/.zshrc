@@ -4,10 +4,6 @@
 export CONFIG_HOME="$HOME/opt/config"
 source "${CONFIG_HOME}/lib/bootstrap.sh"
 
-# aws scrape
-aws_scrape_path="$HOME/.aws/cli/aws-cli-completion"
-fpath=("$aws_scrape_path/zsh" $fpath)
-
 # local custom functions
 for i in "$HOME"/.local/lib/*; do
 	source "$i"
@@ -24,10 +20,7 @@ export PATH=$GOPATH/bin:$PATH
 alias tree="tree -C"
 
 # dotnet
-export PATH="$PATH:$HOME/.dotnet/tools" 
-
-# terraform
-complete -o nospace -C /usr/local/bin/terraform terraform
+export PATH="$PATH:$HOME/.dotnet/tools"
 
 # uncomment to test launch time
 # zprof

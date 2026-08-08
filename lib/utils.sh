@@ -55,13 +55,17 @@ get-config() {
       [ -f "$f" ] && config_files+=("$f")
     done
 
-    merge_jq_expr='map(.tools // [])
-      | add
+    # Filter disabled config files, sort descending by priority (so lower number = higher priority wins last via INDEX).
+    # yq emits one JSON document per input file; jq performs cross-file merge.
+    merge_jq_expr='map(select(.enabled != false))
+      | sort_by(.priority // 100) | reverse
+      | map(.tools // [])
+      | add // []
       | { tools: [INDEX(.[]; .name)[]] }'
 
     yq ea -o=json '.' "${config_files[@]}" | jq -s "$merge_jq_expr" | jq "${@:-.}"
   else
-    error "no config file found. looked for: $config_dir/config.lock.json, $config_dir/config.yaml, or $config_dir/config.*.yaml."
+    error "no config file found, looked for: $config_dir/config.lock.json, $config_dir/config.yaml, or $config_dir/config.*.yaml."
     return 1
   fi
 }
