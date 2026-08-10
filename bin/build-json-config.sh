@@ -29,10 +29,12 @@ for f in "$basedir"/config.*.yaml; do
   [ -f "$f" ] && input_files+=("$f")
 done
 
-# Merge tools from both files and keep one entry per tool name, preferring local.
+# Filter disabled config files, sort descending by priority (so lower number = higher priority wins last via INDEX).
 # yq emits one JSON document per input file; jq performs cross-file merge.
-merge_jq_expr='map(.tools // [])
-  | add
+merge_jq_expr='map(select(.enabled != false))
+  | sort_by(.priority // 100) | reverse
+  | map(.tools // [])
+  | add // []
   | { tools: [INDEX(.[]; .name)[]] }'
 
 if [ "$DRY_RUN" = "1" ]; then

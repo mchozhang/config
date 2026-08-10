@@ -1,0 +1,79 @@
+---
+enabled: true
+priority: 100
+tools:
+  - name: aws
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install awscli
+      ubuntu: |
+        snap-install aws-cli --classic
+    bootstrap:
+      - priority: 100
+        macos: |
+          complete -C '/usr/local/bin/aws_completer' aws
+          # aws scrape
+          aws_scrape_path="$HOME/.aws/cli/aws-cli-completion"
+          fpath=("$aws_scrape_path/zsh" $fpath)
+        ubuntu: |
+          complete -C '/snap/aws-cli/current/bin/aws_completer' aws
+          # aws scrape 
+          aws_scrape_path="$HOME/.aws/cli/aws-cli-completion"
+          fpath=("$aws_scrape_path/zsh" $fpath)
+
+  - name: bash-my-aws
+    enabled: true
+    install-priority: 100
+    install:
+      default: |
+        git-install https://github.com/mbailey/bash-my-aws.git "${HOME}/opt/bash-my-aws"
+    bootstrap:
+      - priority: 100
+        default: |
+          export BMA_HOME="${HOME}/opt/bash-my-aws"
+          export PATH="$PATH:${BMA_HOME}/bin"
+          export BMA_COLUMNISE_ONLY_WHEN_TERMINAL_PRESENT=true
+          source ${BMA_HOME}/aliases
+          source ${BMA_HOME}/bash_completion.sh
+
+  - name: terraform
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew tap hashicorp/tap
+        brew-install hashicorp/tap/terraform
+    bootstrap:
+      - priority: 100
+        macos: |
+          complete -o nospace -C /usr/local/bin/terraform terraform
+
+  - name: colima
+    enabled: true
+    install-priority: 100
+    install:
+      macos: | 
+        brew-install colima
+    bootstrap:
+      - priority: 100
+        macos: | 
+          export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
+
+  - name: pnpm
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install pnpm
+      ubuntu: |
+        curl -fsSL https://get.pnpm.io/install.sh | sh -
+    bootstrap:
+      - priority: 100
+        macos: |
+          export PNPM_HOME="$HOME/Library/pnpm"
+          export PATH="$PNPM_HOME:$PATH"
+        ubuntu: |
+          export PNPM_HOME="$HOME/.local/share/pnpm"
+          export PATH="$PNPM_HOME:$PATH"

@@ -16,15 +16,12 @@ calc() {
 }
 
 no-pyve() {
-    if pyve="$VIRTUAL_ENV" && [[ -n "$VIRTUAL_ENV" ]] && [[ ! "$VIRTUAL_ENV" =~ "$PYTHONPATH" ]] && command -v deactivate &>/dev/null; then
-        deactivate
-    fi
-
-	source "$PYTHONPATH/activate"
-
-    # Set trap to restore venv on exit from this function
-    trap '[[ -n "$pyve" ]] && source "$pyve/bin/activate"' EXIT
+    local pyve="$VIRTUAL_ENV"
+    [[ -n "$pyve" ]] && deactivate
     "$@"
+    local exit_code=$?
+    [[ -n "$pyve" ]] && source "$pyve/bin/activate"
+    return $exit_code
 }
 
 whenis() {
@@ -91,43 +88,3 @@ urldecode() {
     fi
     echo -n "$input" | python3 -c 'import sys, urllib.parse; print(urllib.parse.unquote_plus(sys.stdin.read()))'
 }
-
-catcopy () {
-	file_input="" 
-	while [ $# -gt 0 ]
-	do
-		case "$1" in
-			(-f | --file) file_input="$2" 
-				shift 2 ;;
-			(-*) echo "Error: Unknown option $1" >&2
-				return 1 ;;
-			(*) break ;;
-		esac
-	done
-	if [ -n "$file_input" ]
-	then
-		if [ -f "$file_input" ]
-		then
-			input="$(cat "$file_input")" 
-		else
-			echo "Error: File $file_input" >&2
-			return 1
-		fi
-	elif [ -n "$*" ]
-	then
-		input="$*" 
-	elif [ ! -t 0 ]
-	then
-		input="$(cat)" 
-	else
-		echo "Error: No input provided" >&2
-		return 1
-	fi
-	payload="$(jq -n --arg content "$input" '{content: $content}')" 
-	curl -X PUT https://0qhtjmwnd3.execute-api.ap-southeast-2.amazonaws.com/prod/clipboard -H "x-api-key:copycat" -s -d "$payload"
-}
-
-catpaste () {
-	curl https://0qhtjmwnd3.execute-api.ap-southeast-2.amazonaws.com/prod/clipboard -H "x-api-key:copycat" -s | jq -r '.content' | pbcopy
-}
-

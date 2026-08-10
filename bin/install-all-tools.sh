@@ -31,8 +31,6 @@ fi
 failed=()
 skipped=()
 
-os="$(get-os)"
-
 while IFS= read -r tool; do
   log ""
   log-separator "$tool"

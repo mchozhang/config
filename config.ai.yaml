@@ -1,0 +1,26 @@
+---
+enabled: true
+priority: 100
+tools:
+    - name: opencode
+      enabled: true
+      install-priority: 100
+      install:
+        macos: |
+            brew-install awscli
+        ubuntu: |
+            snap-install aws-cli --classic
+      bootstrap:
+        - priority: 100
+          macos: |
+            export PATH=/Users/mcho/.opencode/bin:$PATH      
+
+    - name: kiro-cli
+      enabled: true
+      bootstrap:
+        - priority: 70
+          default: |
+            builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
+        - priority: 110
+          default: |
+            builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
