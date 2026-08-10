@@ -92,6 +92,9 @@ tools:
       - priority: 90
         default: |
           export PATH="$HOME/.local/bin:$PATH"
+        ubuntu: |
+          export PATH="$HOME/.local/share/uv/python/cpython-3.14-linux-x86_64-gnu/bin:$PATH"
+          export PATH="$HOME/.local/bin:$PATH" 
 
   - name: gnu-utils
     enabled: true
@@ -329,7 +332,11 @@ tools:
         brew-install fd
       ubuntu: |
         apt-install fd-find
-  
+    bootstrap:
+      - priority: 100
+        ubuntu:
+          alias fd=fdfind
+ 
   - name: ripgrep
     enabled: true
     install-priority: 100
@@ -361,3 +368,12 @@ tools:
           alias webstorm="open -a 'WebStorm'"
           alias goland="open -a 'GoLand'"
           alias rider="open -a 'Rider'"
+        ubuntu: |
+          webstorm() {
+            #local project_path win_path exe
+            #project_path=$(realpath "${1:-.}")
+            #win_path=$(wslpath -w "$project_path")
+            exe=$(find /mnt/c/Program\ Files/JetBrains -maxdepth 3 -name "webstorm64.exe" 2>/dev/null | sort -V | tail -1)
+            [ -n "$exe" ] && "$exe" "$win_path" &
+            "$exe" "${1:-.}" &
+          }
