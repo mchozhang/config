@@ -349,3 +349,12 @@ tools:
             [ -n "$exe" ] && "$exe" "$win_path" &
             "$exe" "${1:-.}" &
           }
+  
+  - name: copycat
+    enabled: true
+    install-priority: 100
+    install:
+      default: |
+        git-install https://github.com/mchozhang/copycat.git "${HOME}/opt/copycat"
+        uv tool install "${HOME}/opt/copycat"
+    

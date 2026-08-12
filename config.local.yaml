@@ -1,0 +1,27 @@
+---
+tools:
+  - name: bob
+    enabled: true
+    install-priority: 100
+    install:
+      default: |
+        git-install git@github.com:Versent/vms-bob-woodside.git "${HOME}/opt/vms-bob-woodside"
+        uv-pip-install --system --break-system-packages --python "${HOME}/.local/bin/python3.14" -r "${HOME}/opt/vms-bob-woodside/requirements.txt"
+    bootstrap:
+      - priority: 100
+        default: |
+          source "${HOME}/opt/vms-bob-woodside/bob"
+          alias awslogin="bob awslogin"
+          alias awsurl="bob awsurl open"
+          alias awsprofiles="bob list-aws-profiles"
+
+  - name: awsc
+    enabled: true
+    install-priority: 100
+    install:
+      ubuntu: |
+        curl-install -fsSL https://raw.githubusercontent.com/blontic/awsc/main/install.sh | sh
+    bootstrap:
+      - priority: 100
+        default: |
+          source <(awsc completion zsh)
