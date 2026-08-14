@@ -77,3 +77,22 @@ tools:
         ubuntu: |
           export PNPM_HOME="$HOME/.local/share/pnpm"
           export PATH="$PNPM_HOME:$PATH"
+
+  - name: ide-tools
+    enabled: true
+    bootstrap:
+      - priority: 100
+        macos: |
+          export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+          alias idea="open -a 'IntelliJ IDEA'"
+          alias pycharm="open -a 'Pycharm'"
+          alias webstorm="open -a 'WebStorm'"
+          alias goland="open -a 'GoLand'"
+          alias rider="open -a 'Rider'"
+        ubuntu: |
+          webstorm() {
+            local exe target
+            exe=$(find /mnt/c/Program\ Files/JetBrains -maxdepth 3 -name "webstorm64.exe" 2>/dev/null | sort -V | tail -1)
+            target=$(wslpath -w "${1:-.}" 2>/dev/null)
+            (cd /mnt/c && "$exe" "$target" > /dev/null 2>&1) &!
+          }
