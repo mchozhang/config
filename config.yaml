@@ -94,6 +94,9 @@ tools:
       - priority: 90
         default: |
           export PATH="$HOME/.local/bin:$PATH"
+        ubuntu: |
+          export PATH="$HOME/.local/share/uv/python/cpython-3.14-linux-x86_64-gnu/bin:$PATH"
+          export PATH="$HOME/.local/bin:$PATH" 
 
   - name: gnu-utils
     enabled: true
@@ -301,7 +304,11 @@ tools:
         brew-install fd
       ubuntu: |
         apt-install fd-find
-  
+    bootstrap:
+      - priority: 100
+        ubuntu:
+          alias fd=fdfind
+ 
   - name: ripgrep
     enabled: true
     install-priority: 100
@@ -322,14 +329,12 @@ tools:
         macos: |
           export PATH="$(brew --prefix openssl)/bin:$PATH"
 
-  - name: apps
+  - name: copycat
     enabled: true
-    bootstrap:
-      - priority: 100
-        macos: |
-          export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
-          alias idea="open -a 'IntelliJ IDEA'"
-          alias pycharm="open -a 'Pycharm'"
-          alias webstorm="open -a 'WebStorm'"
-          alias goland="open -a 'GoLand'"
-          alias rider="open -a 'Rider'"
+    install-priority: 100
+    install:
+      default: |
+        git-install https://github.com/mchozhang/copycat.git "${HOME}/opt/copycat"
+        if [ ${DRY_RUN:-1} -eq 0 ]; then
+          uv tool install "${HOME}/opt/copycat"
+        fi
