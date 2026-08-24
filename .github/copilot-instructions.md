@@ -110,6 +110,19 @@ Expected output format example:
   - Dry run (preview changes without applying): `./bin/sync-home.sh --dry-run`
   - Apply changes: `./bin/sync-home.sh`
 
+### `bin/sync-skills.sh`
+- Treats `skills/<name>/` as the canonical, Git-tracked source for globally available Agent Skills.
+- Creates or updates one directory symlink per skill in each supported global skill directory:
+  - `~/.agents/skills/<name>` for GitHub Copilot and OpenCode
+  - `~/.claude/skills/<name>` for Claude Code
+  - `~/.kiro/skills/<name>` for Kiro CLI
+- Never symlinks or replaces an entire agent `skills/` directory, so skills managed outside this repository can coexist.
+- Creates missing destination directories and refuses to overwrite unmanaged files, directories, or symlinks that point outside this repository.
+- Syncs the complete skill directory, including `SKILL.md`, scripts, references, assets, and other supporting files.
+- Must support the repository's standard dry-run behavior:
+  - Dry run (preview changes without applying): `./bin/sync-skills.sh --dry-run`
+  - Apply changes: `./bin/sync-skills.sh`
+
 ### `bin/install-tool.sh`
 
 - parameter: 
@@ -145,5 +158,4 @@ git-install <repo_url>
     export CONFIG_HOME="$HOME/opt/config"
     source "$CONFIG_HOME/lib/bootstrap.sh"
     ```
-
 
