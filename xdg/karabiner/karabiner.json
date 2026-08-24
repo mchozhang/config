@@ -4,33 +4,33 @@
             "complex_modifications": {
                 "rules": [
                     {
-                        "description": "Ctrl+Shift+V -> copycat paste",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "v",
-                                    "modifiers": { "mandatory": ["control", "shift"] }
-                                },
-                                "to": [{ "shell_command": "$(set -a && source $HOME/.config/copycat/config.env && $COPYCAT_PYTHONPATH/python3 $COPYCAT_HOME/client/paste.py | pbcopy && osascript -e 'tell application \"System Events\" to keystroke \"v\" using command down')" }],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Ctrl+Shift+C -> copycat copy",
+                        "description": "Control+Shift+C -> copycat copy",
                         "manipulators": [
                             {
                                 "from": {
                                     "key_code": "c",
                                     "modifiers": { "mandatory": ["control", "shift"] }
                                 },
-                                "to": [{ "shell_command": "set -a && source $HOME/.config/copycat/config.env && osascript $COPYCAT_HOME/client/mac/copycat-copy.scpt" }],
+                                "to": [{ "shell_command": "osascript $HOME/.config/copycat/integration/copycat-copy.scpt" }],
                                 "type": "basic"
                             }
                         ]
                     },
                     {
-                        "description": "Command + Shift + V -> type clipboard content",
+                        "description": "Control+Shift+V -> copycat paste",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "v",
+                                    "modifiers": { "mandatory": ["control", "shift"] }
+                                },
+                                "to": [{ "shell_command": "$HOME/.local/bin/copycat ps && osascript -e 'tell application \"System Events\" to keystroke \"v\" using control down'" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Command+Shift+V-> type clipboard content",
                         "manipulators": [
                             {
                                 "from": {
