@@ -15,7 +15,7 @@ done
 
 DRY_RUN="${DRY_RUN:-0}"
 
-destinations=(
+tool_paths=(
   "$HOME/.agents/skills"
   "$HOME/.claude/skills"
   "$HOME/.kiro/skills"
@@ -23,19 +23,25 @@ destinations=(
 
 log-separator "Syncing global agent skills"
 
-for destination in "${destinations[@]}"; do
+for tool_path in "${tool_paths[@]}"; do
   for skill_dir in "$basedir"/skills/*; do
     [ -f "$skill_dir/SKILL.md" ] || continue
 
     skill_name="$(basename "$skill_dir")"
-    dst="$destination/$skill_name"
+    dst_skill_dir="$tool_path/$skill_name"
 
-    if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$skill_dir" ]; then/
-      log "already linked: $skill_dir → $dst"
-    elif [ -e "$dst" ] || [ -L "$dst" ]; then
-      warn "skipping existing path: $dst"
+    if [ -L "$dst_skill_dir" ] && [ "$(readlink "$dst_skill_dir")" = "$skill_dir" ]; then
+      log "already linked: $skill_dir → $dst_skill_dir"
+    elif [ -e "$dst_skill_dir" ] || [ -L "$dst_skill_dir" ]; then
+      # dst_skill_dir is a real file/dir or a symlink pointing elsewhere: replace it
+      if [ "$DRY_RUN" = "1" ]; then
+        log "[dry-run] would replace existing link: $dst_skill_dir → $skill_dir"
+      else
+        rm -rf "$dst_skill_dir"
+        link "$skill_dir" "$dst_skill_dir"
+      fi
     else
-      link "$skill_dir" "$dst"
+      link "$skill_dir" "$dst_skill_dir"
     fi
   done
 done
