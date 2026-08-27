@@ -335,6 +335,17 @@ tools:
     install:
       default: |
         git-install https://github.com/mchozhang/copycat.git "${HOME}/opt/copycat"
-        if [ ${DRY_RUN:-1} -eq 0 ]; then
-          uv tool install "${HOME}/opt/copycat"
-        fi
+        uv-tool-install -e "${HOME}/opt/copycat"
+
+  - name: tree
+    enabled: true
+    install-priority: 100
+    install:
+      macos: |
+        brew-install tree
+      ubuntu: |
+        apt-install tree
+    bootstrap:
+      - priority: 100
+        default: |
+          alias tree="tree -C'

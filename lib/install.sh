@@ -129,6 +129,39 @@ uv-pip-install() {
   fi
 }
 
+uv-tool-install() {
+  # Usage: uv-tool-install [options] <package>
+  if [ "$#" -lt 1 ]; then
+    error "usage: uv-tool-install [options] <package>"
+    return 1
+  fi
+
+  local package="${!#}"
+  local dry_run="${DRY_RUN:-0}"
+
+  if ! command -v uv > /dev/null 2>&1; then
+    error "uv not found"
+    return 1
+  fi
+
+  if uv tool list | grep -q "^$package "; then
+    log "$package is already installed, checking for updates..."
+    if [ "$dry_run" = "1" ]; then
+      log "[dry-run] uv tool upgrade $package"
+    else
+      log "upgrading $package"
+      uv tool upgrade "$package"
+    fi
+  else
+    if [ "$dry_run" = "1" ]; then
+      log "[dry-run] uv tool install $*"
+    else
+      log "installing $package"
+      uv tool install "$@"
+    fi
+  fi
+}
+
 apt-install() {
   # Usage: apt-install <package>
   if [ "$#" -ne 1 ]; then

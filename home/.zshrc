@@ -16,11 +16,5 @@ alias v="vim"
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$PATH
 
-# tree
-alias tree="tree -C"
-
-# dotnet
-export PATH="$PATH:$HOME/.dotnet/tools"
-
 # uncomment to test launch time
 # zprof
