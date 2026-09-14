@@ -30,6 +30,7 @@ cursor-style-blink = false
 cursor-opacity = 1.0
 cursor-color = cell-foreground
 cursor-text = cell-background
+adjust-cursor-thickness = 2
 
 # keybind
 keybind = global:ctrl+grave_accent=toggle_quick_terminal
