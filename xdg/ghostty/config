@@ -28,6 +28,8 @@ window-theme = auto
 cursor-style = bar
 cursor-style-blink = false
 cursor-opacity = 1.0
+cursor-color = cell-foreground
+cursor-text = cell-background
 
 # keybind
 keybind = global:ctrl+grave_accent=toggle_quick_terminal
