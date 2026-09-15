@@ -1,0 +1,35 @@
+---
+skills:
+  - name: ponytail
+    enabled: true
+    source: github
+    url: https://github.com/dietrichgebert/ponytail
+    skill-path: skills/ponytail/SKILL.md
+
+  - name: karpathy-guidelines
+    enabled: true
+    source: github
+    url: https://github.com/multica-ai/andrej-karpathy-skills.git
+    skill-path: skills/karpathy-guidelines/SKILL.md
+
+  - name: grill-me
+    enabled: true
+    source: github
+    url: https://github.com/mattpocock/skills.git
+    skill-path: skills/productivity/grill-me/SKILL.md
+
+  - name: grilling
+    enabled: true
+    source: github
+    url: https://github.com/mattpocock/skills.git
+    skill-path: skills/productivity/grilling/SKILL.md
+
+  - name: before-action
+    enabled: true
+    source: local
+    skill-path: ai-agents/skills/before-action/SKILL.md
+
+  - name: coding-guidelines
+    enabled: true
+    source: local
+    skill-path: ai-agents/skills/coding-guidelines/SKILL.md

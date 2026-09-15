@@ -1,13 +1,12 @@
 ---
+metadata:
+    github-path: skills/karpathy-guidelines/SKILL.md
+    github-repo: https://github.com/multica-ai/andrej-karpathy-skills
+name: karpathy-guidelines
 description: Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.
 license: MIT
-metadata:
-    github-path: skills/karpathy-guidelines
-    github-ref: refs/heads/main
-    github-repo: https://github.com/multica-ai/andrej-karpathy-skills
-    github-tree-sha: e119339197d600aa39a24fd7a95c946800c9c949
-name: karpathy-guidelines
 ---
+
 # Karpathy Guidelines
 
 Behavioral guidelines to reduce common LLM coding mistakes, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.

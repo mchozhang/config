@@ -1,8 +1,8 @@
 ---
 description: Use when reviewing, writing or refactoring code.
-name: general-coding-guidelines
+name: coding-guidelines
 ---
-# General Coding Guidelines
+# Coding Guidelines
 
 ## Comments
 

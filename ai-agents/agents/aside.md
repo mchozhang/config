@@ -1,6 +1,8 @@
 ---
 name: aside
 description: Answers questions on their own merits, ignoring repository and session context
+mode: subagent
+hidden: true
 disable-model-invocation: true
 ---
 

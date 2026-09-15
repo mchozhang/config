@@ -63,6 +63,26 @@ Each config file has below properties:
 - The same folder structure will be maintained under `home/` as the target structure under `~`.
 - Each file is symlinked individually at the leaf level into the matching path under `~`.
 
+### ai-agents (`ai-agents/`)
+- Source of truth for global AI agent tooling config, shared across GitHub Copilot, OpenCode, Claude Code, and Kiro CLI.
+- `ai-agents/config.yaml` lists skills to vendor. Each entry has:
+  - `name`: (mandatory) skill name; must match the folder name under `ai-agents/skills/`.
+  - `enabled`: `true` by default, whether to fetch/sync this skill.
+  - `source`: `local` (authored directly in this repo) or `github` (vendored from an upstream repo).
+  - `url`: (github only) the upstream repo to fetch from.
+  - `skill-path`: for `source: local`, the path to the skill's `SKILL.md` in this repo; for `source: github`, the path to the skill within the upstream repo (used to locate it, and re-stamped into `SKILL.md` frontmatter as provenance metadata after fetching).
+- `ai-agents/AGENTS.md` is the single canonical global instructions doc (equivalent to `AGENTS.md`/`CLAUDE.md`/`copilot-instructions.md`), symlinked verbatim into every tool's real instructions path.
+- `ai-agents/agents/*.md` are canonical global subagents. Each file carries one frontmatter block (the union of fields every target tool needs); only the destination filename convention differs per tool.
+- `ai-agents/skills/<name>/` holds the vendored or locally authored skill content.
+- Unlike `xdg/`/`home/`, which mirror a single source into a single destination, `ai-agents/` content fans out from one source to multiple real per-tool locations (not into `xdg/`/`home/`), so it uses its own scripts:
+  - `bin/install-agents.sh` fetches/upgrades `source: github` skills into `ai-agents/skills/`.
+  - `bin/sync-agents.sh` symlinks `ai-agents/AGENTS.md`, `ai-agents/agents/*.md`, and `ai-agents/skills/*/` into:
+    - `~/.copilot/copilot-instructions.md`, `~/.copilot/agents/<name>.agent.md`
+    - `~/.config/opencode/AGENTS.md`, `~/.config/opencode/agents/<name>.md`
+    - `~/.claude/CLAUDE.md`, `~/.claude/agents/<name>.md`
+    - `~/.agents/skills/<name>` (Copilot/OpenCode), `~/.claude/skills/<name>`, `~/.kiro/skills/<name>`
+  - Skills disabled in `config.yaml` have their symlinks removed on next sync (only symlinks owned by this repo are touched; foreign files/dirs are never removed).
+
 ## Scripts (`bin/`, `lib/`)
 
 - `bin/` contains executable scripts
@@ -110,18 +130,27 @@ Expected output format example:
   - Dry run (preview changes without applying): `./bin/sync-home.sh --dry-run`
   - Apply changes: `./bin/sync-home.sh`
 
-### `bin/sync-skills.sh`
-- Treats `skills/<name>/` as the canonical, Git-tracked source for globally available Agent Skills.
-- Creates or updates one directory symlink per skill in each supported global skill directory:
-  - `~/.agents/skills/<name>` for GitHub Copilot and OpenCode
-  - `~/.claude/skills/<name>` for Claude Code
-  - `~/.kiro/skills/<name>` for Kiro CLI
-- Never symlinks or replaces an entire agent `skills/` directory, so skills managed outside this repository can coexist.
-- Creates missing destination directories and refuses to overwrite unmanaged files, directories, or symlinks that point outside this repository.
-- Syncs the complete skill directory, including `SKILL.md`, scripts, references, assets, and other supporting files.
+### `bin/install-agents.sh`
+- Reads `ai-agents/config.yaml` and fetches/upgrades every enabled `source: github` skill into `ai-agents/skills/<name>/`, using the `skills` CLI (https://skills.sh) via `npx`.
+- Groups skills by upstream repo `url` so a repo shared by multiple skills (e.g. `grill-me` and `grilling`) is fetched only once.
+- Re-stamps `metadata.github-repo`/`metadata.github-path` into each skill's `SKILL.md` frontmatter after fetching, so provenance stays discoverable for the next upgrade.
+- `source: local` skills are only checked for existence (nothing to fetch).
 - Must support the repository's standard dry-run behavior:
-  - Dry run (preview changes without applying): `./bin/sync-skills.sh --dry-run`
-  - Apply changes: `./bin/sync-skills.sh`
+  - Dry run (preview changes without applying): `./bin/install-agents.sh --dry-run`
+  - Apply changes: `./bin/install-agents.sh`
+- Run `./bin/sync-agents.sh` afterwards to refresh symlinks.
+
+### `bin/sync-agents.sh`
+- Treats `ai-agents/` as the canonical, Git-tracked source of truth for global AI agent tooling config, and symlinks it directly into each tool's real global config location (not into `xdg/`/`home/`, which only support one destination per source):
+  - `ai-agents/AGENTS.md` → `~/.copilot/copilot-instructions.md`, `~/.config/opencode/AGENTS.md`, `~/.claude/CLAUDE.md`, `~/.kiro/steering/AGENTS.md`
+  - `ai-agents/agents/<name>.md` → `~/.copilot/agents/<name>.agent.md`, `~/.config/opencode/agents/<name>.md`, `~/.claude/agents/<name>.md`
+  - `ai-agents/skills/<name>/` → `~/.agents/skills/<name>` (GitHub Copilot and OpenCode), `~/.claude/skills/<name>` (Claude Code), `~/.kiro/skills/<name>` (Kiro CLI)
+- **Known gap**: Kiro CLI's global agents are JSON files with a `prompt` string field (see `kiro-cli agent create`), not markdown+frontmatter like the other tools, so `ai-agents/agents/<name>.md` is not synced there. Kiro still gets skills and instructions (via `~/.kiro/steering/`).
+- Skills disabled in `ai-agents/config.yaml` have their symlink removed on next sync.
+- Never symlinks or replaces an entire agent `skills/`/`agents/` directory, so entries managed outside this repository can coexist; only touches symlinks it created that still point into this repo.
+- Must support the repository's standard dry-run behavior:
+  - Dry run (preview changes without applying): `./bin/sync-agents.sh --dry-run`
+  - Apply changes: `./bin/sync-agents.sh`
 
 ### `bin/install-tool.sh`
 
