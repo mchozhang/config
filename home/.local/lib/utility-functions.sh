@@ -23,6 +23,8 @@ no-pyve() {
     [[ -n "$pyve" ]] && source "$pyve/bin/activate"
     return $exit_code
 }
+# delegate completion to the wrapped command (same mechanism zsh uses for nice/nohup/env)
+[[ -n "$ZSH_VERSION" ]] && compdef _precommand no-pyve
 
 whenis() {
 	if ! [[ "$1" =~ ^[0-9]+(\.[0-9]+)?$ ]]
