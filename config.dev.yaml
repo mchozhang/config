@@ -96,3 +96,9 @@ tools:
             target=$(wslpath -w "${1:-.}" 2>/dev/null)
             (cd /mnt/c && "$exe" "$target" > /dev/null 2>&1) &!
           }
+          pycharm() {
+            local exe target
+            exe=$(find /mnt/c/Program\ Files/JetBrains -maxdepth 3 -name "pycharm64.exe" 2>/dev/null | sort -V | tail -1)
+            target=$(wslpath -w "${1:-.}" 2>/dev/null)
+            (cd /mnt/c && "$exe" "$target" > /dev/null 2>&1) &!
+          }
