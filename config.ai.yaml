@@ -7,9 +7,9 @@ tools:
       install-priority: 100
       install:
         macos: |
-            #
+            brew-install anomalyco/tap/opencode-v2
         ubuntu: |
-            #
+            curl-install -fsSL https://opencode.ai/v2/install | bash
       bootstrap:
         - priority: 100
           default: |
