@@ -348,4 +348,4 @@ tools:
     bootstrap:
       - priority: 100
         default: |
-          alias tree="tree -C'
+          alias tree="tree -C"
