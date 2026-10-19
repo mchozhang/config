@@ -68,6 +68,7 @@ tools:
           # Enable bracketed paste magic to handle long text safely, speed up paste
           autoload -Uz bracketed-paste-magic
           zle -N bracketed-paste bracketed-paste-magic
+          zstyle ':bracketed-paste-magic' active-widgets '.self-*'
 
           # special characters for word boundaries in zsh
           WORDCHARS=''
@@ -261,6 +262,7 @@ tools:
       - priority: 100
         default: |
           source "${HOME}/opt/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+          export ZSH_HIGHLIGHT_MAXLENGTH=512
 
   - name: zsh-autosuggestions
     enabled: true
